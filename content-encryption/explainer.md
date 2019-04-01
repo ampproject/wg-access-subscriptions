@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This concept was primarily designed for AMP Access/Subscriptions protocols. However it's relevant and applicable to Web at large.
+This concept was primarily designed for [AMP Access](https://github.com/ampproject/amphtml/blob/master/extensions/amp-access/amp-access.md) and [AMP Subscriptions](https://github.com/ampproject/amphtml/blob/master/extensions/amp-subscriptions/amp-subscriptions.md) protocols. However it's relevant and applicable to Web at large.
 
-Some publishers sell access to their content. Let's call such content — "premium content". It may be sold via different business models including recurring subscriptions, per-article purchase, metering, and so on. If a user has access to a document the "premium content" is immediately displayed, otherwise the "premium content" is hidden and only a "preview" of the document is shown.
+Some publishers monetize access to their content. Let's call such content — "premium content". It may be sold via different business models including recurring subscriptions, per-article purchases, metering, and so on. If a user has access to a document the "premium content" is immediately displayed, otherwise the "premium content" is hidden and only a "preview" of the document is shown.
 
 The main question is: how the "premium content" is hidden and how it can be shown based on the authorization.
 
@@ -50,7 +50,7 @@ To prepare the document, the publisher has to execute the following steps:
 1. Create a random key — the "document key".
 2. Create a structure that includes the "document key" and the access requirements — the "document crypt".
 3. Encrypt the "document crypt" using the publisher's internal key and the supported authorizers' public keys.
-4. Output the encrypted "document crypts" in the document's header.
+4. Output the encrypted "document crypts" in the document's head.
 5. Use the "document key" to encrypt the premium sections.
 6. Output the content, including the encrypted "premium" sections.
 
@@ -111,9 +111,9 @@ See [Malleability](https://en.wikipedia.org/wiki/Malleability_(cryptography)) fo
 
 ---
 
-#### /4/ Output the encrypted "document crypts" in the document's header.
+#### /4/ Output the encrypted "document crypts" in the document's head.
 
-The encrypted "document crypts" are output in the document's header inside a `<script>` tag:
+The encrypted "document crypts" are output in the document's `<head>` inside a `<script>` tag:
 
 ```html
 <head>
@@ -186,10 +186,11 @@ The client side (such as AMP Runtime) is very simple. It can request the authori
 A client can send the authorization requests to all authorizers in parallel. Each authorization request must include the corresponding "document crypt":
 
 ```javascript
+const serviceId = ...;
 const encryptedKeys =
    JSON.parse(document.querySelector('script[keys]').textContent);
 const cryptString = encryptedKeys[serviceId];
-return fetch(serviceUrl + '?crypt=' + cryptString)
+return fetch(serviceUrl + '?crypt=' + encodeURIComponent(cryptString))
    .then(response => response.json())
    .then(json => importKey(json['key']));
 ```
@@ -303,7 +304,7 @@ The simplicity of this protocol is in the fact that all the work is concentrated
 
 This protocol explicitly allows multiple parties to be sanctioned by the publisher to access the content. To allow a third-party to access the "premium" sections, a publisher only needs to include their "document crypt" in the document.
 
-> The premium content should not be freely crawlable by default.
+> The premium content should not be freely crawlable by default, but allow authorized crawling.
 
 The premium content is encrypted. The robots could download a document, but that has a limited value without the "document key".
 
