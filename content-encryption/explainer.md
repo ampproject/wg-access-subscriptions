@@ -54,7 +54,7 @@ To prepare the document, the publisher has to execute the following steps:
 5. Use the "document key" to encrypt the premium sections.
 6. Output the content, including the encrypted "premium" sections.
 
-Let's assume that the document encryption is done using [AES-CTR-256](https://tools.ietf.org/html/rfc3686#section-2.1) — it's a simple and strong algorithm that allows streaming. The keys are 256 bit in length.  **Note: in the implemetation in `amp-subscriptions` AES-GCM has replace AES-CTR**
+Let's assume that the document encryption is done using [AES-CTR-256](https://tools.ietf.org/html/rfc3686#section-2.1) — it's a simple and strong algorithm that allows streaming. The keys are 256 bit in length.  **Note: in the implemetation in `amp-subscriptions` AES-GCM has replaced AES-CTR**
 
 #### /1/ Create a random key — the "document key".
 
